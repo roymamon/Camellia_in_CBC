@@ -1,20 +1,24 @@
+from .key_schedule import generate_subkeys
 from .f_function import f_function
+from .fl_layers import fl_layer_encrypt
+from utils.bitoperations import split_block, join_block
 
-def feistel_encrypt_rounds(left: int, right: int, round_keys: list[int], rounds: int) -> tuple[int, int]:
-    """Perform multiple rounds of Feistel structure using the F-function."""
-    for i in range(rounds):
-        temp = left ^ f_function(right, round_keys[i])
-        left, right = right, temp  # Swap after round
-    return left, right
+def camellia_encrypt_block(plaintext: int, key: int) -> int:
+    keys = generate_subkeys(key)
+    L, R = split_block(plaintext)
 
-if __name__ == "__main__":
-    L = 0x0123456789ABCDEF
-    R = 0x1111222233334444
-    fake_key = 0x0F0E0D0C0B0A0908
-    round_keys = [fake_key] * 18  
+    L ^= keys['kw'][0]
+    R ^= keys['kw'][1]
 
-    L_out, R_out = feistel_encrypt_rounds(L, R, round_keys, 18)
+    for i in range(18):
+        F = f_function(R, keys['rk'][i])
+        L, R = R, L ^ F
+        if i == 5:
+            L, R = fl_layer_encrypt(L, R, keys['fl'][0], keys['fl'][1])
+        elif i == 11:
+            L, R = fl_layer_encrypt(L, R, keys['fl'][2], keys['fl'][3])
 
-    print(f"After 18 rounds:")
-    print(f"Left  = {L_out:016X}")
-    print(f"Right = {R_out:016X}")
+    L, R = R, L
+    L ^= keys['kw'][2]
+    R ^= keys['kw'][3]
+    return join_block(L, R)

@@ -1,15 +1,9 @@
-from camellia.camellia_core import feistel_encrypt_rounds
+from camellia.camellia_core import camellia_encrypt_block
 
-if __name__ == "__main__":
-    L = 0x0123456789ABCDEF
-    R = 0x1111222233334444
+key = int("0123456789abcdeffedcba9876543210", 16)
+plaintext = int("0123456789abcdeffedcba9876543210", 16)
+expected = "67673138549669730857065648eabe43"
 
-    fake_key = 0x0F0E0D0C0B0A0908
-
-    round_keys = [fake_key] * 18
-
-    L_out, R_out = feistel_encrypt_rounds(L, R, round_keys, 18)
-
-    print(f"After 18 rounds:")
-    print(f"Left  = {L_out:016X}")
-    print(f"Right = {R_out:016X}")
+cipher = camellia_encrypt_block(plaintext, key)
+print("Ciphertext:", f"{cipher:032x}")
+print("Match:", expected == f"{cipher:032x}")
