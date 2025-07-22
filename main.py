@@ -28,28 +28,28 @@ def main():
     # Output
     print(f"Ciphertext: {ciphertext:032x}")
 """
-    key_hex = "f39fd9e02d78dc321ecc59692c22c3b3"
-    iv_hex = "e88a6d70380f65346aeb79c39a20af88"
-    expected_cipher_hex = "ad91a80f6385a3dca96b48aa533a88bf"
+    plaintext = b"RoyMamon"
+    key_hex = "e550f5ccfa9a19bcbe3e1ce9f1d9c5e7"
+    iv_hex = "4f1cca5b4bcd5a4bb1114bef22f4d09b"
+    expected_cipher_hex = "f2c0a611dc5eba72fb6fff55b75cf809"
 
     key = int.from_bytes(bytes.fromhex(key_hex), 'big')
     iv = bytes.fromhex(iv_hex)
-    plaintext = b"Hello"
 
     cipher = cbc_encrypt(plaintext, key, iv)
     actual_cipher_hex = cipher.hex()
 
-    print("Camellia CBC Encryption Test")
+    print("Test: Camellia CBC")
+    print(f"Plaintext:  {plaintext}")
     print(f"Key:        {key_hex}")
     print(f"IV:         {iv_hex}")
-    print(f"Plaintext:  {plaintext}")
-    print(f"Ciphertext: {actual_cipher_hex}")
     print(f"Expected:   {expected_cipher_hex}")
+    print(f"Actual:     {actual_cipher_hex}")
 
     if actual_cipher_hex == expected_cipher_hex:
         print("✅ Match! Encryption is correct.")
     else:
-        print("❌ Mismatch! Check padding, IV, or core cipher.")
+        print("❌ Mismatch. Check implementation.")
 
 if __name__ == "__main__":
     main()
