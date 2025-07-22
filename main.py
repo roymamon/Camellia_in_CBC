@@ -1,28 +1,29 @@
 from camellia.camellia_core import camellia_encrypt_block
 
 def main():
-    # Test vector from RFC 3713 for Camellia-128
-    key_hex = "0123456789abcdeffedcba9876543210"
-    plaintext_hex = "0123456789abcdeffedcba9876543210"
-    expected_ciphertext_hex = "67673138549669730857065648eabe43"
+    print("Camellia-128 Block Encryption (ECB mode)")
 
-    key = int(key_hex, 16)
-    plaintext = int(plaintext_hex, 16)
-    expected_ciphertext = int(expected_ciphertext_hex, 16)
+    # Input: Key and Plaintext (as hex strings)
+    key_hex = input("Enter 128-bit key (32 hex digits): ").strip()
+    plaintext_hex = input("Enter 128-bit plaintext (32 hex digits): ").strip()
+
+    # Validate lengths
+    if len(key_hex) != 32 or len(plaintext_hex) != 32:
+        print("❌ Error: Both key and plaintext must be 32 hex digits (128 bits).")
+        return
+
+    try:
+        key = int(key_hex, 16)
+        plaintext = int(plaintext_hex, 16)
+    except ValueError:
+        print("❌ Error: Invalid hex input.")
+        return
 
     # Encrypt
     ciphertext = camellia_encrypt_block(plaintext, key)
 
-    # Results
-    print(f"Key:              {key_hex}")
-    print(f"Plaintext:        {plaintext_hex}")
-    print(f"Expected Cipher:  {expected_ciphertext_hex}")
-    print(f"Computed Cipher:  {ciphertext:032x}")
-
-    if ciphertext == expected_ciphertext:
-        print("\n✅ Test Passed: Ciphertext matches expected output.")
-    else:
-        print("\n❌ Test Failed: Ciphertext does not match expected output.")
+    # Output
+    print(f"Ciphertext: {ciphertext:032x}")
 
 if __name__ == "__main__":
     main()
