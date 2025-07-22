@@ -50,3 +50,18 @@ def fl_function(FL_IN: int, KE: int) -> int:
     FL_OUT = (x1 << 32) | x2
     
     return FL_OUT
+
+def flinv_function(FLINV_IN: int, KE: int) -> int:
+
+    #var y1, y2 as 32-bit unsigned integer
+    y1 = FLINV_IN >> 32
+    y2 = FLINV_IN & MASK32
+    #var k1, k2 as 32-bit unsigned integer
+    k1 = KE >> 32
+    k2 = KE & MASK32
+    y1 = y1 ^ (y2 | k2)
+    #(32-bit rotation)
+    y2 ^= ((y1 & k1) << 1 | (y1 & k1) >> 31) & MASK32
+    FLINV_OUT = (y1 << 32) | y2
+    
+    return FLINV_OUT
