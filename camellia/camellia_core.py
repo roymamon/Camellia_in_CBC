@@ -13,7 +13,7 @@ def camellia_encrypt_block(plaintext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
-    #Prewhitening
+    #prewhitening
     D1 = D1 ^ kw[0]   
     D2 = D2 ^ kw[1]
     D2 = D2 ^ f_function(D1,k[0])  #round 1
@@ -38,7 +38,7 @@ def camellia_encrypt_block(plaintext: int, key: int) -> int:
     D1 = D1 ^ f_function(D2,k[15])  #round 16
     D2 = D2 ^ f_function(D1,k[16])  #round 17
     D1 = D1 ^ f_function(D2,k[17])  #round 18
-    #Postwhitening
+    #postwhitening
     D2 = D2 ^ kw[2]  
     D1 = D1 ^ kw[3]
 
@@ -54,32 +54,32 @@ def camellia_decrypt_block(ciphertext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
-    # Reverse subkeys
+    #reverse subkeys
     kw = [kw[2], kw[3], kw[0], kw[1]]
     k = k[::-1]
     ke = [ke[3], ke[2], ke[1], ke[0]]
 
-    # Prewhitening (using reversed kw3, kw4)
+    #prewhitening (using reversed kw3, kw4)
     D2 ^= kw[0]
     D1 ^= kw[1]
 
-    # Rounds (reverse order)
+    #rounds (reverse order)
     D1 ^= f_function(D2, k[0])
     D2 ^= f_function(D1, k[1])
     D1 ^= f_function(D2, k[2])
     D2 ^= f_function(D1, k[3])
     D1 ^= f_function(D2, k[4])
     D2 ^= f_function(D1, k[5])
-    D2 = fl_function(D2, ke[0])     # FL
-    D1 = flinv_function(D1, ke[1])  # FLINV
+    D2 = fl_function(D2, ke[0])     
+    D1 = flinv_function(D1, ke[1])  
     D1 ^= f_function(D2, k[6])
     D2 ^= f_function(D1, k[7])
     D1 ^= f_function(D2, k[8])
     D2 ^= f_function(D1, k[9])
     D1 ^= f_function(D2, k[10])
     D2 ^= f_function(D1, k[11])
-    D2 = fl_function(D2, ke[2])     # FL
-    D1 = flinv_function(D1, ke[3])  # FLINV
+    D2 = fl_function(D2, ke[2])     
+    D1 = flinv_function(D1, ke[3])  
     D1 ^= f_function(D2, k[12])
     D2 ^= f_function(D1, k[13])
     D1 ^= f_function(D2, k[14])
@@ -87,7 +87,7 @@ def camellia_decrypt_block(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[16])
     D2 ^= f_function(D1, k[17])
 
-    # Postwhitening (using reversed kw1, kw2)
+    #postwhitening (using reversed kw1, kw2)
     D1 ^= kw[2]
     D2 ^= kw[3]
 
