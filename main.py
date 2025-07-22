@@ -1,6 +1,9 @@
-from camellia.camellia_core import camellia_encrypt_block
+from camellia.camellia_core import camellia_encrypt_block, camellia_decrypt_block
+from camellia.cbc_mode import cbc_encrypt
+
 
 def main():
+    """""
     print("Camellia-128 Block Encryption (ECB mode)")
 
     # Input: Key and Plaintext (as hex strings)
@@ -24,6 +27,8 @@ def main():
 
     # Output
     print(f"Ciphertext: {ciphertext:032x}")
+"""
+   
 
 if __name__ == "__main__":
     main()
