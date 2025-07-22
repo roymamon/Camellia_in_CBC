@@ -1,6 +1,6 @@
 from utils.constants import MASK64, SIGMA
 from utils.methods import rotl128
-from camellia.f_functions import f_function
+from .f_functions import f_function
 
 def generate_subkeys(key: int) -> dict:
 
@@ -20,7 +20,7 @@ def generate_subkeys(key: int) -> dict:
     D2 = (KA ^ KR) & MASK64
     D2 = D2 ^ f_function(D1, SIGMA[4])
     D1 = D1 ^ f_function(D2, SIGMA[5])
-    #KB is not used in 128-bit key
+    #KB is not used in 128-bit
     KB = (D1 << 64) | D2 
 
     kw1 = rotl128(KL,0) >> 64

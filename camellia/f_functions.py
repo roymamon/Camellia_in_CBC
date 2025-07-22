@@ -1,4 +1,4 @@
-from utils.constants import MASK8
+from utils.constants import MASK8, MASK32, MASK64
 from camellia.sbox import SBOX1, SBOX2, SBOX3, SBOX4
 
 def f_function(F_IN: int, KE: int) -> int:
@@ -35,3 +35,18 @@ def f_function(F_IN: int, KE: int) -> int:
     F_OUT = (y1 << 56) | (y2 << 48) | (y3 << 40) | (y4 << 32)| (y5 << 24) | (y6 << 16) | (y7 <<  8) | y8
     
     return F_OUT
+
+def fl_function(FL_IN: int, KE: int) -> int:
+
+    #var x1, x2 as 32-bit unsigned integer
+    x1 = FL_IN >> 32
+    x2 = FL_IN & MASK32
+    #var k1, k2 as 32-bit unsigned integer
+    k1 = KE >> 32
+    k2 = KE & MASK32
+    #(32-bit rotation)
+    x2 ^= ((x1 & k1) << 1 | (x1 & k1) >> 31) & MASK32 
+    x1 = x1 ^ (x2 | k2)
+    FL_OUT = (x1 << 32) | x2
+    
+    return FL_OUT
