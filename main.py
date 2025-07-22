@@ -1,5 +1,6 @@
 from camellia.camellia_core import camellia_encrypt_block, camellia_decrypt_block
 from camellia.cbc_mode import cbc_encrypt
+from camellia.cbc_mode import cbc_decrypt
 
 
 def main():
@@ -28,28 +29,7 @@ def main():
     # Output
     print(f"Ciphertext: {ciphertext:032x}")
 """
-    plaintext = b"RoyMamon"
-    key_hex = "e550f5ccfa9a19bcbe3e1ce9f1d9c5e7"
-    iv_hex = "4f1cca5b4bcd5a4bb1114bef22f4d09b"
-    expected_cipher_hex = "f2c0a611dc5eba72fb6fff55b75cf809"
-
-    key = int.from_bytes(bytes.fromhex(key_hex), 'big')
-    iv = bytes.fromhex(iv_hex)
-
-    cipher = cbc_encrypt(plaintext, key, iv)
-    actual_cipher_hex = cipher.hex()
-
-    print("Test: Camellia CBC")
-    print(f"Plaintext:  {plaintext}")
-    print(f"Key:        {key_hex}")
-    print(f"IV:         {iv_hex}")
-    print(f"Expected:   {expected_cipher_hex}")
-    print(f"Actual:     {actual_cipher_hex}")
-
-    if actual_cipher_hex == expected_cipher_hex:
-        print("✅ Match! Encryption is correct.")
-    else:
-        print("❌ Mismatch. Check implementation.")
-
+    
+    
 if __name__ == "__main__":
     main()
