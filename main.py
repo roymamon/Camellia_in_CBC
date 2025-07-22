@@ -16,7 +16,7 @@ def get_bytes(prompt: str, expected_len: int = None) -> bytes:
             print("❌ Invalid hex input.")
 
 def main():
-    print("Camellia")
+    print("Camellia in a CBC mode.\n")
     print("Type -1 to exit.\n")
 
     while True:
