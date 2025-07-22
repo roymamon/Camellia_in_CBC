@@ -1,24 +1,46 @@
+from utils.constants import MASK64
+from .f_functions import f_function, fl_function, flinv_function
 from .key_schedule import generate_subkeys
-from .f_function import f_function
-from .fl_layers import fl_layer_encrypt
-from utils.bitoperations import split_block, join_block
 
 def camellia_encrypt_block(plaintext: int, key: int) -> int:
-    keys = generate_subkeys(key)
-    L, R = split_block(plaintext)
 
-    L ^= keys['kw'][0]
-    R ^= keys['kw'][1]
+    #split to left and right
+    D1 = plaintext >> 64
+    D2 = plaintext & MASK64
 
-    for i in range(18):
-        F = f_function(R, keys['rk'][i])
-        L, R = R, L ^ F
-        if i == 5:
-            L, R = fl_layer_encrypt(L, R, keys['fl'][0], keys['fl'][1])
-        elif i == 11:
-            L, R = fl_layer_encrypt(L, R, keys['fl'][2], keys['fl'][3])
+    subkeys = generate_subkeys(key)
+    kw = subkeys["kw"]
+    k = subkeys["k"]
+    ke = subkeys["ke"]
 
-    L, R = R, L
-    L ^= keys['kw'][2]
-    R ^= keys['kw'][3]
-    return join_block(L, R)
+    #Prewhitening
+    D1 = D1 ^ kw[0]   
+    D2 = D2 ^ kw[1]
+    D2 = D2 ^ f_function(D1,k[0])  #round 1
+    D1 = D1 ^ f_function(D2,k[1])  #round 2
+    D2 = D2 ^ f_function(D1,k[2])  #round 3
+    D1 = D1 ^ f_function(D2,k[3])  #round 4
+    D2 = D2 ^ f_function(D1,k[4])  #round 5
+    D1 = D1 ^ f_function(D2,k[5])  #round 6
+    D1 = fl_function(D1,ke[0])  #FL
+    D2 = flinv_function(D2,ke[1])  #FLINV
+    D2 = D2 ^ f_function(D1,k[6])  #round 7
+    D1 = D1 ^ f_function(D2,k[7])  #round 8
+    D2 = D2 ^ f_function(D1,k[8])  #round 9
+    D1 = D1 ^ f_function(D2,k[9])  #round 10
+    D2 = D2 ^ f_function(D1,k[10])  #round 11
+    D1 = D1 ^ f_function(D2,k[11])  #round 12
+    D1 = fl_function(D1,ke[2])  #FL
+    D2 = flinv_function(D2,ke[3])  #FLINV
+    D2 = D2 ^ f_function(D1,k[12])  #round 13
+    D1 = D1 ^ f_function(D2,k[13])  #round 14
+    D2 = D2 ^ f_function(D1,k[14])  #round 15
+    D1 = D1 ^ f_function(D2,k[15])  #round 16
+    D2 = D2 ^ f_function(D1,k[16])  #round 17
+    D1 = D1 ^ f_function(D2,k[17])  #round 18
+    #Postwhitening
+    D2 = D2 ^ kw[2]  
+    D1 = D1 ^ kw[3]
+
+    ciphertext = (D2 << 64) | D1
+    return ciphertext

@@ -1,6 +1,6 @@
 from utils.constants import MASK64, SIGMA
 from utils.methods import rotl128
-from camellia.f_function import f_function
+from camellia.f_functions import f_function
 
 def generate_subkeys(key: int) -> dict:
 
