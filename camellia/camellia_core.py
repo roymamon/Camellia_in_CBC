@@ -4,7 +4,9 @@ from .key_schedule import generate_subkeys, generate_subkeys_192, generate_subke
 
 def camellia_encrypt_block(plaintext: int, key: int) -> int:
 
-    #split to left and right
+    """128-bit plaintext M is divided into
+    the left 64-bit D1 and the right
+    64-bit D2"""
     D1 = plaintext >> 64
     D2 = plaintext & MASK64
 
@@ -13,8 +15,12 @@ def camellia_encrypt_block(plaintext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
-    #prewhitening
-    D1 = D1 ^ kw[0]   
+
+    """Encryption is performed using an
+    18-round Feistel structure with FL-
+    and FLINV-functions inserted every 6
+    rounds"""
+    D1 = D1 ^ kw[0]  #prewhitening  
     D2 = D2 ^ kw[1]
     D2 = D2 ^ f_function(D1,k[0])  #round 1
     D1 = D1 ^ f_function(D2,k[1])  #round 2
@@ -38,14 +44,20 @@ def camellia_encrypt_block(plaintext: int, key: int) -> int:
     D1 = D1 ^ f_function(D2,k[15])  #round 16
     D2 = D2 ^ f_function(D1,k[16])  #round 17
     D1 = D1 ^ f_function(D2,k[17])  #round 18
-    #postwhitening
-    D2 = D2 ^ kw[2]  
+    D2 = D2 ^ kw[2]  #postwhitening
     D1 = D1 ^ kw[3]
 
+    """128-bit ciphertext C is constructed
+    from D1 and D2 as follows"""
     ciphertext = (D2 << 64) | D1
     return ciphertext
 
 def camellia_decrypt_block(ciphertext: int, key: int) -> int:
+  
+    """The decryption procedure can be done
+    in the same way as the encryption
+    procedure by reversing the order of
+    the subkeys"""
     D2 = ciphertext >> 64
     D1 = ciphertext & MASK64
 
@@ -103,6 +115,10 @@ def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
+    """Encryption is performed using a
+    24-round Feistel structure with FL-
+    and FLINV-functions inserted every 6
+    rounds"""
     D1 ^= kw[0]
     D2 ^= kw[1]
 

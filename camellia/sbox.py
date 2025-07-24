@@ -1,5 +1,10 @@
 from utils.constants import MASK8
 
+"""SBOX1, SBOX2, SBOX3, and SBOX4 are
+lookup tables with 8-bit input/output data.
+SBOX2, SBOX3, and SBOX4 are defined using
+SBOX1 as follows"""
+
 SBOX1 = [
     112,130, 44,236,179, 39,192,229,228,133, 87, 53,234, 12,174, 65,
      35,239,107,147, 69, 25,165, 33,237, 14, 79, 78, 29,101,146,189,

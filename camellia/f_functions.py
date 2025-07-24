@@ -3,6 +3,11 @@ from camellia.sbox import SBOX1, SBOX2, SBOX3, SBOX4
 
 def f_function(F_IN: int, KE: int) -> int:
 
+    """F-function takes two parameters.
+    One is 64-bit input data F_IN.
+    The other is 64-bit subkey KE.
+    F-function returns 64-bit data F_OUT"""
+
     #var x as 64-bit unsigned integer
     x  = F_IN ^ KE
     #var t1, t2, t3, t4, t5, t6, t7, t8 as 8-bit unsigned integer
@@ -38,6 +43,11 @@ def f_function(F_IN: int, KE: int) -> int:
 
 def fl_function(FL_IN: int, KE: int) -> int:
 
+    """FL-function takes two parameters.
+    One is 64-bit input data FL_IN.
+    The other is 64-bit subkey KE.
+    FL-function returns 64-bit data FL_OUT"""
+
     #var x1, x2 as 32-bit unsigned integer
     x1 = FL_IN >> 32
     x2 = FL_IN & MASK32
@@ -52,6 +62,9 @@ def fl_function(FL_IN: int, KE: int) -> int:
     return FL_OUT
 
 def flinv_function(FLINV_IN: int, KE: int) -> int:
+
+    """FLINV-function is the inverse
+    function of the FL-function"""
 
     #var y1, y2 as 32-bit unsigned integer
     y1 = FLINV_IN >> 32

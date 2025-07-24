@@ -3,6 +3,10 @@ MASK32  = 0xFFFFFFFF
 MASK64  = 0xFFFFFFFFFFFFFFFF
 MASK128 = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
+"""The 64-bit constants Sigma1, Sigma2,
+..., Sigma6 are used as "keys" in the
+F-function"""
+
 SIGMA = [
     0xA09E667F3BCC908B,
     0xB67AE8584CAA73B2,
