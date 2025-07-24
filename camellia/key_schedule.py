@@ -59,7 +59,6 @@ def generate_subkeys(key: int) -> dict:
 def generate_subkeys_192(key: int) -> dict:
 
     KL = key >> 64
-    #try to KR exactly like RFC if doesnt work
     KR = ((key & MASK64) << 64) | (~(key & MASK64) & MASK64)
 
      # Step 2: Generate KA
