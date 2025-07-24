@@ -1,6 +1,6 @@
 from utils.constants import MASK64
 from .f_functions import f_function, fl_function, flinv_function
-from .key_schedule import generate_subkeys
+from .key_schedule import generate_subkeys, generate_subkeys_192
 
 def camellia_encrypt_block(plaintext: int, key: int) -> int:
 
@@ -93,3 +93,68 @@ def camellia_decrypt_block(ciphertext: int, key: int) -> int:
 
     plaintext = (D1 << 64) | D2
     return plaintext
+
+def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
+    # Split into left and right 64-bit blocks
+    D1 = plaintext >> 64
+    D2 = plaintext & MASK64
+
+    subkeys = generate_subkeys_192(key)
+    kw = subkeys["kw"]
+    k = subkeys["k"]
+    ke = subkeys["ke"]
+
+    # Prewhitening
+    D1 ^= kw[0]
+    D2 ^= kw[1]
+
+    # Rounds 1–6
+    D2 ^= f_function(D1, k[0])
+    D1 ^= f_function(D2, k[1])
+    D2 ^= f_function(D1, k[2])
+    D1 ^= f_function(D2, k[3])
+    D2 ^= f_function(D1, k[4])
+    D1 ^= f_function(D2, k[5])
+
+    # FL/FLINV 1
+    D1 = fl_function(D1, ke[0])
+    D2 = flinv_function(D2, ke[1])
+
+    # Rounds 7–12
+    D2 ^= f_function(D1, k[6])
+    D1 ^= f_function(D2, k[7])
+    D2 ^= f_function(D1, k[8])
+    D1 ^= f_function(D2, k[9])
+    D2 ^= f_function(D1, k[10])
+    D1 ^= f_function(D2, k[11])
+
+    # FL/FLINV 2
+    D1 = fl_function(D1, ke[2])
+    D2 = flinv_function(D2, ke[3])
+
+    # Rounds 13–18
+    D2 ^= f_function(D1, k[12])
+    D1 ^= f_function(D2, k[13])
+    D2 ^= f_function(D1, k[14])
+    D1 ^= f_function(D2, k[15])
+    D2 ^= f_function(D1, k[16])
+    D1 ^= f_function(D2, k[17])
+
+    # FL/FLINV 3
+    D1 = fl_function(D1, ke[4])
+    D2 = flinv_function(D2, ke[5])
+
+    # Rounds 19–24
+    D2 ^= f_function(D1, k[18])
+    D1 ^= f_function(D2, k[19])
+    D2 ^= f_function(D1, k[20])
+    D1 ^= f_function(D2, k[21])
+    D2 ^= f_function(D1, k[22])
+    D1 ^= f_function(D2, k[23])
+
+    # Postwhitening
+    D2 ^= kw[2]
+    D1 ^= kw[3]
+
+    ciphertext = (D2 << 64) | D1
+    return ciphertext

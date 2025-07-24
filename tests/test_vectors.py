@@ -1,5 +1,5 @@
 import unittest
-from camellia.camellia_core import camellia_encrypt_block, camellia_decrypt_block
+from camellia.camellia_core import camellia_encrypt_block, camellia_decrypt_block, camellia_encrypt_block_192
 from camellia.cbc_mode import cbc_encrypt, cbc_decrypt
 
 #to run: python3 -m unittest tests.test_vectors
@@ -31,6 +31,19 @@ class CamelliaVectorTest(unittest.TestCase):
         decrypted = camellia_decrypt_block(ciphertext, key)
         self.assertEqual(decrypted, expected_plaintext,
                      f"Expected {expected_plaintext_hex}, got {decrypted:032x}")
+    
+    def test_rfc3713_vector_192(self):
+     key_hex = "0123456789abcdeffedcba98765432100011223344556677"
+     plaintext_hex = "0123456789abcdeffedcba9876543210"
+     expected_ciphertext_hex = "b4993401b3e996f84ee5cee7d79b09b9"
+
+     key = int(key_hex, 16)
+     plaintext = int(plaintext_hex, 16)
+     expected_ciphertext = int(expected_ciphertext_hex, 16)
+
+     ciphertext = camellia_encrypt_block_192(plaintext, key)
+     self.assertEqual(ciphertext, expected_ciphertext,
+                      f"Expected {expected_ciphertext_hex}, got {ciphertext:032x}")
     
     def test_cbc_vector_hello_encrypt(self):
         key_hex = "f39fd9e02d78dc321ecc59692c22c3b3"
