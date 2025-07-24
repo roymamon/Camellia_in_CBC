@@ -1,5 +1,4 @@
-from camellia.camellia_core import camellia_encrypt_block
-from camellia.camellia_core import camellia_decrypt_block
+from .camellia_core import camellia_encrypt_block, camellia_decrypt_block
 
 
 def pad_pkcs7(data: bytes, block_size: int = 16) -> bytes:

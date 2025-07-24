@@ -91,6 +91,7 @@ class CamelliaVectorTest(unittest.TestCase):
         self.assertEqual(plaintext, expected_plaintext,
                         f"Expected {expected_plaintext_hex}, got {plaintext:032x}")
 
+    #tests from: https://asecuritysite.com/hazmat/symcam
 
     def test_cbc_vector_hello_encrypt(self):
         key_hex = "f39fd9e02d78dc321ecc59692c22c3b3"
@@ -145,6 +146,7 @@ class CamelliaVectorTest(unittest.TestCase):
         decrypted = cbc_decrypt(ciphertext, key, iv)
         self.assertEqual(decrypted, expected_plaintext,
                          f"Expected {expected_plaintext}, got {decrypted}")
+
 
 if __name__ == "__main__":
     unittest.main()
