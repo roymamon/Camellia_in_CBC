@@ -61,7 +61,6 @@ def generate_subkeys_192(key: int) -> dict:
     KL = key >> 64
     KR = ((key & MASK64) << 64) | (~(key & MASK64) & MASK64)
 
-     # Step 2: Generate KA
     D1 = (KL ^ KR) >> 64
     D2 = (KL ^ KR) & MASK64
     D2 ^= f_function(D1, SIGMA[0])
@@ -72,14 +71,12 @@ def generate_subkeys_192(key: int) -> dict:
     D1 ^= f_function(D2, SIGMA[3])
     KA = (D1 << 64) | D2
 
-    # Step 3: Generate KB
     D1 = (KA ^ KR) >> 64
     D2 = (KA ^ KR) & MASK64
     D2 ^= f_function(D1, SIGMA[4])
     D1 ^= f_function(D2, SIGMA[5])
     KB = (D1 << 64) | D2
 
-    # Step 4: Generate subkeys
     kw1 = rotl128(KL,   0) >> 64
     kw2 = rotl128(KL,   0) & MASK64
     k1  = rotl128(KB,   0) >> 64
@@ -127,7 +124,6 @@ def generate_subkeys_256(key: int) -> dict:
     KL = key >> 128
     KR = key & MASK128
 
-     # Step 2: Generate KA
     D1 = (KL ^ KR) >> 64
     D2 = (KL ^ KR) & MASK64
     D2 ^= f_function(D1, SIGMA[0])
@@ -138,14 +134,12 @@ def generate_subkeys_256(key: int) -> dict:
     D1 ^= f_function(D2, SIGMA[3])
     KA = (D1 << 64) | D2
 
-    # Step 3: Generate KB
     D1 = (KA ^ KR) >> 64
     D2 = (KA ^ KR) & MASK64
     D2 ^= f_function(D1, SIGMA[4])
     D1 ^= f_function(D2, SIGMA[5])
     KB = (D1 << 64) | D2
 
-    # Step 4: Generate subkeys
     kw1 = rotl128(KL,   0) >> 64
     kw2 = rotl128(KL,   0) & MASK64
     k1  = rotl128(KB,   0) >> 64

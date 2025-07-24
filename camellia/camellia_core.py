@@ -95,7 +95,6 @@ def camellia_decrypt_block(ciphertext: int, key: int) -> int:
     return plaintext
 
 def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
-    # Split into left and right 64-bit blocks
     D1 = plaintext >> 64
     D2 = plaintext & MASK64
 
@@ -104,11 +103,9 @@ def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
-    # Prewhitening
     D1 ^= kw[0]
     D2 ^= kw[1]
 
-    # Rounds 1–6
     D2 ^= f_function(D1, k[0])
     D1 ^= f_function(D2, k[1])
     D2 ^= f_function(D1, k[2])
@@ -116,11 +113,9 @@ def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
     D2 ^= f_function(D1, k[4])
     D1 ^= f_function(D2, k[5])
 
-    # FL/FLINV 1
     D1 = fl_function(D1, ke[0])
     D2 = flinv_function(D2, ke[1])
 
-    # Rounds 7–12
     D2 ^= f_function(D1, k[6])
     D1 ^= f_function(D2, k[7])
     D2 ^= f_function(D1, k[8])
@@ -128,11 +123,9 @@ def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
     D2 ^= f_function(D1, k[10])
     D1 ^= f_function(D2, k[11])
 
-    # FL/FLINV 2
     D1 = fl_function(D1, ke[2])
     D2 = flinv_function(D2, ke[3])
 
-    # Rounds 13–18
     D2 ^= f_function(D1, k[12])
     D1 ^= f_function(D2, k[13])
     D2 ^= f_function(D1, k[14])
@@ -140,11 +133,9 @@ def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
     D2 ^= f_function(D1, k[16])
     D1 ^= f_function(D2, k[17])
 
-    # FL/FLINV 3
     D1 = fl_function(D1, ke[4])
     D2 = flinv_function(D2, ke[5])
 
-    # Rounds 19–24
     D2 ^= f_function(D1, k[18])
     D1 ^= f_function(D2, k[19])
     D2 ^= f_function(D1, k[20])
@@ -152,7 +143,6 @@ def camellia_encrypt_block_192(plaintext: int, key: int) -> int:
     D2 ^= f_function(D1, k[22])
     D1 ^= f_function(D2, k[23])
 
-    # Postwhitening
     D2 ^= kw[2]
     D1 ^= kw[3]
 
@@ -168,16 +158,13 @@ def camellia_decrypt_block_192(ciphertext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
-    # Reverse subkeys according to spec
-    kw = [kw[2], kw[3], kw[0], kw[1]]  # kw3, kw4, kw1, kw2
-    k = k[::-1]                        # reverse k1..k24 → k24..k1
-    ke = [ke[5], ke[4], ke[3], ke[2], ke[1], ke[0]]  # ke6..ke1
+    kw = [kw[2], kw[3], kw[0], kw[1]]  
+    k = k[::-1]                        
+    ke = [ke[5], ke[4], ke[3], ke[2], ke[1], ke[0]]  
 
-    # Postwhitening (reversed kw1, kw2)
     D2 ^= kw[0]
     D1 ^= kw[1]
 
-    # Rounds 24–19
     D1 ^= f_function(D2, k[0])
     D2 ^= f_function(D1, k[1])
     D1 ^= f_function(D2, k[2])
@@ -185,11 +172,9 @@ def camellia_decrypt_block_192(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[4])
     D2 ^= f_function(D1, k[5])
 
-    # FL/FLINV 3 (reversed ke6, ke5)
     D2 = fl_function(D2, ke[0])
     D1 = flinv_function(D1, ke[1])
 
-    # Rounds 18–13
     D1 ^= f_function(D2, k[6])
     D2 ^= f_function(D1, k[7])
     D1 ^= f_function(D2, k[8])
@@ -197,11 +182,9 @@ def camellia_decrypt_block_192(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[10])
     D2 ^= f_function(D1, k[11])
 
-    # FL/FLINV 2 (reversed ke4, ke3)
     D2 = fl_function(D2, ke[2])
     D1 = flinv_function(D1, ke[3])
 
-    # Rounds 12–7
     D1 ^= f_function(D2, k[12])
     D2 ^= f_function(D1, k[13])
     D1 ^= f_function(D2, k[14])
@@ -209,11 +192,9 @@ def camellia_decrypt_block_192(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[16])
     D2 ^= f_function(D1, k[17])
 
-    # FL/FLINV 1 (reversed ke2, ke1)
     D2 = fl_function(D2, ke[4])
     D1 = flinv_function(D1, ke[5])
 
-    # Rounds 6–1
     D1 ^= f_function(D2, k[18])
     D2 ^= f_function(D1, k[19])
     D1 ^= f_function(D2, k[20])
@@ -221,7 +202,6 @@ def camellia_decrypt_block_192(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[22])
     D2 ^= f_function(D1, k[23])
 
-    # Prewhitening (reversed kw3, kw4)
     D1 ^= kw[2]
     D2 ^= kw[3]
 
@@ -229,7 +209,6 @@ def camellia_decrypt_block_192(ciphertext: int, key: int) -> int:
     return plaintext
 
 def camellia_encrypt_block_256(plaintext: int, key: int) -> int:
-    # Split into left and right 64-bit blocks
     D1 = plaintext >> 64
     D2 = plaintext & MASK64
 
@@ -238,11 +217,9 @@ def camellia_encrypt_block_256(plaintext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
-    # Prewhitening
     D1 ^= kw[0]
     D2 ^= kw[1]
 
-    # Rounds 1–6
     D2 ^= f_function(D1, k[0])
     D1 ^= f_function(D2, k[1])
     D2 ^= f_function(D1, k[2])
@@ -250,11 +227,9 @@ def camellia_encrypt_block_256(plaintext: int, key: int) -> int:
     D2 ^= f_function(D1, k[4])
     D1 ^= f_function(D2, k[5])
 
-    # FL/FLINV 1
     D1 = fl_function(D1, ke[0])
     D2 = flinv_function(D2, ke[1])
 
-    # Rounds 7–12
     D2 ^= f_function(D1, k[6])
     D1 ^= f_function(D2, k[7])
     D2 ^= f_function(D1, k[8])
@@ -266,7 +241,6 @@ def camellia_encrypt_block_256(plaintext: int, key: int) -> int:
     D1 = fl_function(D1, ke[2])
     D2 = flinv_function(D2, ke[3])
 
-    # Rounds 13–18
     D2 ^= f_function(D1, k[12])
     D1 ^= f_function(D2, k[13])
     D2 ^= f_function(D1, k[14])
@@ -274,11 +248,9 @@ def camellia_encrypt_block_256(plaintext: int, key: int) -> int:
     D2 ^= f_function(D1, k[16])
     D1 ^= f_function(D2, k[17])
 
-    # FL/FLINV 3
     D1 = fl_function(D1, ke[4])
     D2 = flinv_function(D2, ke[5])
 
-    # Rounds 19–24
     D2 ^= f_function(D1, k[18])
     D1 ^= f_function(D2, k[19])
     D2 ^= f_function(D1, k[20])
@@ -286,7 +258,6 @@ def camellia_encrypt_block_256(plaintext: int, key: int) -> int:
     D2 ^= f_function(D1, k[22])
     D1 ^= f_function(D2, k[23])
 
-    # Postwhitening
     D2 ^= kw[2]
     D1 ^= kw[3]
 
@@ -303,16 +274,13 @@ def camellia_decrypt_block_256(ciphertext: int, key: int) -> int:
     k = subkeys["k"]
     ke = subkeys["ke"]
 
-    # Reverse subkeys according to spec
-    kw = [kw[2], kw[3], kw[0], kw[1]]  # kw3, kw4, kw1, kw2
-    k = k[::-1]                        # reverse k1..k24 → k24..k1
-    ke = [ke[5], ke[4], ke[3], ke[2], ke[1], ke[0]]  # ke6..ke1
+    kw = [kw[2], kw[3], kw[0], kw[1]]  
+    k = k[::-1]                        
+    ke = [ke[5], ke[4], ke[3], ke[2], ke[1], ke[0]]  
 
-    # Postwhitening (reversed kw1, kw2)
     D2 ^= kw[0]
     D1 ^= kw[1]
 
-    # Rounds 24–19
     D1 ^= f_function(D2, k[0])
     D2 ^= f_function(D1, k[1])
     D1 ^= f_function(D2, k[2])
@@ -320,11 +288,9 @@ def camellia_decrypt_block_256(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[4])
     D2 ^= f_function(D1, k[5])
 
-    # FL/FLINV 3 (reversed ke6, ke5)
     D2 = fl_function(D2, ke[0])
     D1 = flinv_function(D1, ke[1])
 
-    # Rounds 18–13
     D1 ^= f_function(D2, k[6])
     D2 ^= f_function(D1, k[7])
     D1 ^= f_function(D2, k[8])
@@ -332,11 +298,9 @@ def camellia_decrypt_block_256(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[10])
     D2 ^= f_function(D1, k[11])
 
-    # FL/FLINV 2 (reversed ke4, ke3)
     D2 = fl_function(D2, ke[2])
     D1 = flinv_function(D1, ke[3])
 
-    # Rounds 12–7
     D1 ^= f_function(D2, k[12])
     D2 ^= f_function(D1, k[13])
     D1 ^= f_function(D2, k[14])
@@ -344,11 +308,9 @@ def camellia_decrypt_block_256(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[16])
     D2 ^= f_function(D1, k[17])
 
-    # FL/FLINV 1 (reversed ke2, ke1)
     D2 = fl_function(D2, ke[4])
     D1 = flinv_function(D1, ke[5])
 
-    # Rounds 6–1
     D1 ^= f_function(D2, k[18])
     D2 ^= f_function(D1, k[19])
     D1 ^= f_function(D2, k[20])
@@ -356,7 +318,6 @@ def camellia_decrypt_block_256(ciphertext: int, key: int) -> int:
     D1 ^= f_function(D2, k[22])
     D2 ^= f_function(D1, k[23])
 
-    # Prewhitening (reversed kw3, kw4)
     D1 ^= kw[2]
     D2 ^= kw[3]
 
