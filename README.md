@@ -22,15 +22,9 @@ How to use:
 You can type -1 at any point to exit.
 
 Sources:
-1. RFC 3713 – Camellia Encryption Algorithm
-Link: https://datatracker.ietf.org/doc/html/rfc3713
-2. NIST SP 800-38A – “Recommendation for Block Cipher Modes of Operation”
-Link: https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-38a.pdf
-3. RFC 4312 – Camellia for IPsec
-Link: https://datatracker.ietf.org/doc/html/rfc4312
-4. Specification of Camellia — CRYPTREC (Japan’s Cryptography Research)
-Link: https://www.cryptrec.go.jp/en/cryptrec_03_spec_cypherlist_files/PDF/06_01espec.pdf
-5. Camellia official website
-Link: https://info.isl.ntt.co.jp/crypt/eng/camellia/
-
+1. RFC 3713 – Camellia Encryption Algorithm: https://datatracker.ietf.org/doc/html/rfc3713
+2. NIST SP 800-38A – “Recommendation for Block Cipher Modes of Operation”: https://nvlpubs.nist.gov/nistpubs/legacy/sp/nistspecialpublication800-38a.pdf
+3. RFC 4312 – Camellia for IPsec: https://datatracker.ietf.org/doc/html/rfc4312
+4. Specification of Camellia — CRYPTREC (Japan’s Cryptography Research): https://www.cryptrec.go.jp/en/cryptrec_03_spec_cypherlist_files/PDF/06_01espec.pdf
+5. Camellia official website: https://info.isl.ntt.co.jp/crypt/eng/camellia/
 
