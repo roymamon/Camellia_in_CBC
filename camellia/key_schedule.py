@@ -1,4 +1,4 @@
-from utils.constants import MASK64, SIGMA
+from utils.constants import MASK64, MASK128, SIGMA
 from utils.methods import rotl128
 from .f_functions import f_function
 
@@ -60,6 +60,72 @@ def generate_subkeys_192(key: int) -> dict:
 
     KL = key >> 64
     KR = ((key & MASK64) << 64) | (~(key & MASK64) & MASK64)
+
+     # Step 2: Generate KA
+    D1 = (KL ^ KR) >> 64
+    D2 = (KL ^ KR) & MASK64
+    D2 ^= f_function(D1, SIGMA[0])
+    D1 ^= f_function(D2, SIGMA[1])
+    D1 ^= (KL >> 64)
+    D2 ^= (KL & MASK64)
+    D2 ^= f_function(D1, SIGMA[2])
+    D1 ^= f_function(D2, SIGMA[3])
+    KA = (D1 << 64) | D2
+
+    # Step 3: Generate KB
+    D1 = (KA ^ KR) >> 64
+    D2 = (KA ^ KR) & MASK64
+    D2 ^= f_function(D1, SIGMA[4])
+    D1 ^= f_function(D2, SIGMA[5])
+    KB = (D1 << 64) | D2
+
+    # Step 4: Generate subkeys
+    kw1 = rotl128(KL,   0) >> 64
+    kw2 = rotl128(KL,   0) & MASK64
+    k1  = rotl128(KB,   0) >> 64
+    k2  = rotl128(KB,   0) & MASK64
+    k3  = rotl128(KR,  15) >> 64
+    k4  = rotl128(KR,  15) & MASK64
+    k5  = rotl128(KA,  15) >> 64
+    k6  = rotl128(KA,  15) & MASK64
+    ke1 = rotl128(KR,  30) >> 64
+    ke2 = rotl128(KR,  30) & MASK64
+    k7  = rotl128(KB,  30) >> 64
+    k8  = rotl128(KB,  30) & MASK64
+    k9  = rotl128(KL,  45) >> 64
+    k10 = rotl128(KL,  45) & MASK64
+    k11 = rotl128(KA,  45) >> 64
+    k12 = rotl128(KA,  45) & MASK64
+    ke3 = rotl128(KL,  60) >> 64
+    ke4 = rotl128(KL,  60) & MASK64
+    k13 = rotl128(KR,  60) >> 64
+    k14 = rotl128(KR,  60) & MASK64
+    k15 = rotl128(KB,  60) >> 64
+    k16 = rotl128(KB,  60) & MASK64
+    k17 = rotl128(KL,  77) >> 64
+    k18 = rotl128(KL,  77) & MASK64
+    ke5 = rotl128(KA,  77) >> 64
+    ke6 = rotl128(KA,  77) & MASK64
+    k19 = rotl128(KR,  94) >> 64
+    k20 = rotl128(KR,  94) & MASK64
+    k21 = rotl128(KA,  94) >> 64
+    k22 = rotl128(KA,  94) & MASK64
+    k23 = rotl128(KL, 111) >> 64
+    k24 = rotl128(KL, 111) & MASK64
+    kw3 = rotl128(KB, 111) >> 64
+    kw4 = rotl128(KB, 111) & MASK64
+
+    return {
+        "kw": [kw1, kw2, kw3, kw4],
+        "k": [k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12,
+              k13, k14, k15, k16, k17, k18, k19, k20, k21, k22, k23, k24],
+        "ke": [ke1, ke2, ke3, ke4, ke5, ke6],
+    }
+
+def generate_subkeys_256(key: int) -> dict:
+
+    KL = key >> 128
+    KR = key & MASK128
 
      # Step 2: Generate KA
     D1 = (KL ^ KR) >> 64
